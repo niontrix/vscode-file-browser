@@ -1,13 +1,13 @@
 {
     "name": "file-browser",
-    "publisher": "bodil",
+    "publisher": "niontrix",
     "displayName": "File Browser",
     "description": "A nicer alternative to the file open dialog.",
-    "version": "0.2.11",
+    "version": "0.2.12",
     "license": "LGPL-3.0+",
     "author": {
-        "name": "Bodil Stokke",
-        "url": "https://bodil.lol/"
+        "name": "Tobias Heinlein",
+        "url": "https://github.com/niontrix"
     },
     "repository": {
         "type": "git",
@@ -19,7 +19,7 @@
     ],
     "icon": "images/icon.png",
     "engines": {
-        "vscode": "^1.75"
+        "vscode": "^1.75.0"
     },
     "categories": [
         "Other"
@@ -119,6 +119,7 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
+        "build:package": "npm run compile && npx @vscode/vsce package",
         "compile": "tsc -p ./",
         "lint": "eslint src",
         "watch": "tsc -watch -p ./",
@@ -126,17 +127,11 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.11.1",
-        "@types/eslint__js": "^8.42.3",
-        "@types/glob": "^8.1.0",
-        "@types/mocha": "^10.0.8",
         "@types/node": "^22.7.4",
         "@types/vscode": "1.75.1",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
-        "@vscode/test-electron": "^2.4.1",
         "eslint": "^9.11.1",
-        "glob": "^11.0.0",
-        "mocha": "^10.7.3",
         "typescript": "^5.6.2",
         "typescript-eslint": "^8.8.0"
     },

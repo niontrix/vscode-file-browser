@@ -15,6 +15,7 @@ export enum ConfigItem {
     HideIgnoreFiles = "hideIgnoredFiles",
     IgnoreFileTypes = "ignoreFileTypes",
     LabelIgnoredFiles = "labelIgnoredFiles",
+    IgnoreFocusLoss = "ignoreFocusLoss",
 }
 
 export function config<A>(item: ConfigItem): A | undefined {
@@ -61,6 +62,7 @@ class FileBrowser {
         this.file = file;
         this.pathHistory = { [this.path.id]: this.file };
         this.current = vscode.window.createQuickPick();
+        this.current.ignoreFocusOut = config(ConfigItem.IgnoreFocusLoss) as boolean;
         this.current.buttons = [this.actionsButton, this.stepOutButton, this.stepInButton];
         this.current.placeholder = "Preparing the file list...";
         this.current.onDidHide(() => {

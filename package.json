@@ -64,6 +64,11 @@
                         ".npmignore",
                         ".vscodeignore"
                     ]
+                },
+                "file-browser.ignoreFocusLoss": {
+                    "markdownDescription": "Keep the Quick Pick open even if focus is lost",
+                    "type": "boolean",
+                    "default": false
                 }
             }
         },

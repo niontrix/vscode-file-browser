@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as vscode from 'vscode';
 import { Uri } from 'vscode';
-import { Path } from './path';
-import { Rules } from './filter';
-import { FileItem, itemIsDir } from './fileitem';
-import * as extensionModule from './extension';
+import { Path } from '../src/path';
+import { Rules } from '../src/filter';
+import { FileItem, itemIsDir } from '../src/fileitem';
+import * as extensionModule from '../src/extension';
 
 describe('Rules', () => {
   const testRoot = '/home/user/project';

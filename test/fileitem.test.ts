@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as vscode from 'vscode';
-import { FileItem, itemIsDir, fileRecordCompare } from './fileitem';
-import * as extensionModule from './extension';
+import { FileItem, itemIsDir, fileRecordCompare } from '../src/fileitem';
+import * as extensionModule from '../src/extension';
 
 const FileType = vscode.FileType;
 

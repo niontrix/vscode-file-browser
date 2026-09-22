@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as vscode from 'vscode';
 import { Option, None, Some, Result, Err, Ok } from '@bodil/opt';
-import { Path, endsWithPathSeparator, lookUpwards } from './path';
+import { Path, endsWithPathSeparator, lookUpwards } from '../src/path';
 
 describe('Path', () => {
   describe('constructor & static methods', () => {

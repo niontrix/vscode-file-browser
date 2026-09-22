@@ -1,11 +1,11 @@
 import { vi } from 'vitest';
 
 // Cache for URI objects - same path always returns same object
-const uriCache = new Map<string, vscode.Uri>();
+const uriCache = new Map<string, {}>();
 
-const getOrCreateUri = (path: string): vscode.Uri => {
+const getOrCreateUri = (path: string): {} => {
   if (!uriCache.has(path)) {
-    const uri: vscode.Uri = {
+    const uri = {
       scheme: 'file',
       authority: '',
       path,
@@ -94,109 +94,6 @@ vi.mock('@bodil/opt', () => {
     }
   }} };
 });
-
-// Mock vscode module
-vi.mock('vscode', () => ({
-  Uri: {
-    file: (path: string): vscode.Uri => getOrCreateUri(path),
-    parse: (str: string): vscode.Uri => {
-      // Simple parse: extract path from file:///...
-      const pathStr = str.replace('file://', '');
-      return getOrCreateUri(pathStr);
-    },
-    joinPath: (base: vscode.Uri, ...segments: string[]): vscode.Uri => {
-      const basePath = base.path;
-      // VS Code Uri.joinPath normalizes . and .. segments
-      const allParts = [basePath, ...segments].join('/').split('/').filter(Boolean);
-      const stack: string[] = [];
-      for (const part of allParts) {
-        if (part === '..') {
-          stack.pop();
-        } else if (part !== '.' && part !== '') {
-          stack.push(part);
-        }
-      }
-      const newPath = '/' + stack.join('/');
-      return getOrCreateUri(newPath);
-    },
-  },
-  FileType: {
-    File: 1,
-    Directory: 2,
-    SymbolicLink: 64,
-  },
-  WorkspaceFolder: class {},
-  FileSystemError: {
-    FileNotFound: (uri?: any) => ({ name: 'FileSystemError', message: 'File not found', uri }),
-    FileNotADirectory: (uri?: any) => ({ name: 'FileSystemError', message: 'Not a directory', uri }),
-  },
-  window: {
-    createQuickPick: () => ({}),
-    showQuickPick: () => Promise.resolve(undefined),
-  },
-  workspace: {
-    getConfiguration: () => {
-      // Return a mock WorkspaceConfiguration with a controllable get method
-      const mockConfig: { _values: Map<string, unknown> } = {
-        _values: new Map(),
-      };
-      const mockWsConfig = {
-        get: vi.fn((key: string) => mockConfig._values.get(key)),
-        update: vi.fn(() => Promise.resolve()),
-        has: vi.fn(() => false),
-        inspect: vi.fn(() => undefined),
-      };
-      // Attach the _values map to the mock so tests can set values
-      Object.defineProperty(mockWsConfig, '_values', {
-        value: mockConfig._values,
-        writable: true,
-        configurable: true,
-      });
-      return mockWsConfig as any;
-    },
-    getWorkspaceFolder: () => null,
-    fs: {
-      stat: () => Promise.reject({ name: 'FileSystemError' }),
-      readFile: () => Promise.resolve(Buffer.from('')),
-      writeFile: () => Promise.resolve(),
-      mkdir: () => Promise.resolve(),
-      readdir: () => Promise.resolve([]),
-      delete: () => Promise.resolve(),
-      copy: () => Promise.resolve(),
-      move: () => Promise.resolve(),
-      exists: () => Promise.resolve(false),
-    },
-    folders: [],
-    hasWorkspaceFolder: () => false,
-    updateWorkspaceFolders: () => false,
-  },
-  commands: {
-    executeCommand: () => Promise.resolve(),
-    registerCommand: () => ({ dispose: () => {} }),
-    registerProvider: () => ({ dispose: () => {} }),
-  },
-  Disposable: class {
-    static from(...disposableLike: { dispose: () => any }[]) {
-      return new class extends vscode.Disposable {
-        constructor() { super(() => {}); }
-      };
-    }
-    constructor(_dispose: () => any) {}
-    dispose() {}
-    combine(other: vscode.Disposable) { return this; }
-  },
-  Event: class {},
-  EventEmitter: class {
-    event = vi.fn();
-    fire = vi.fn();
-    dispose = vi.fn();
-  },
-  ThemeIcon: class {
-    constructor(public id: string, public color?: any) {}
-  },
-  QuickInputButton: class {},
-  QuickPickItem: class {},
-}));
 
 // Mock 'path' module (node:path)
 vi.mock('path', () => {

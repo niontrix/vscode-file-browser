@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Action, action } from './action';
+import { Action, action } from '../src/action';
 
 describe('Action', () => {
   describe('enum', () => {

@@ -45,6 +45,7 @@ vi.mock('@bodil/opt', () => {
       }
     },
     orDefault: (dflt: unknown) => (result === undefined || result === null) ? dflt : result,
+    getOrElse: (fn: () => unknown) => (result === undefined || result === null) ? fn() : result,
   });
 
   const Some = (value: unknown) => createOption(value);
@@ -134,7 +135,25 @@ vi.mock('vscode', () => ({
     showQuickPick: () => Promise.resolve(undefined),
   },
   workspace: {
-    getConfiguration: () => ({}),
+    getConfiguration: () => {
+      // Return a mock WorkspaceConfiguration with a controllable get method
+      const mockConfig: { _values: Map<string, unknown> } = {
+        _values: new Map(),
+      };
+      const mockWsConfig = {
+        get: vi.fn((key: string) => mockConfig._values.get(key)),
+        update: vi.fn(() => Promise.resolve()),
+        has: vi.fn(() => false),
+        inspect: vi.fn(() => undefined),
+      };
+      // Attach the _values map to the mock so tests can set values
+      Object.defineProperty(mockWsConfig, '_values', {
+        value: mockConfig._values,
+        writable: true,
+        configurable: true,
+      });
+      return mockWsConfig as any;
+    },
     getWorkspaceFolder: () => null,
     fs: {
       stat: () => Promise.reject({ name: 'FileSystemError' }),
@@ -178,3 +197,96 @@ vi.mock('vscode', () => ({
   QuickInputButton: class {},
   QuickPickItem: class {},
 }));
+
+// Mock 'path' module (node:path)
+vi.mock('path', () => {
+  const actualPath = require('path');
+  return {
+    ...actualPath,
+    basename: (p: string, ext?: string) => actualPath.basename(p, ext),
+    join: (...paths: string[]) => actualPath.join(...paths),
+    relative: (from: string, to: string) => actualPath.relative(from, to),
+    sep: actualPath.sep,
+  };
+});
+
+// Mock 'ignore' module - provides gitignore-like pattern matching
+vi.mock('ignore', () => {
+  interface IgnoreEntry {
+    pattern: string;
+    isDir: boolean;
+  }
+
+  class IgnoreMock {
+    private entries: IgnoreEntry[] = [];
+
+    add(pattern: string | string[] | IgnoreEntry[]): IgnoreMock {
+      const patterns = Array.isArray(pattern) ? pattern : [pattern];
+      for (const p of patterns) {
+        if (typeof p === 'string') {
+          this.entries.push({ pattern: p, isDir: false });
+        } else if (Array.isArray(p)) {
+          this.entries.push(...p.map((s) => ({ pattern: s, isDir: false })));
+        } else {
+          this.entries.push(p);
+        }
+      }
+      return this;
+    }
+
+    test(path: string): { ignored: boolean; path: string } {
+      for (const entry of this.entries) {
+        const regexPattern = this.ignorePatternToRegex(entry.pattern);
+        const regex = new RegExp(regexPattern);
+        if (regex.test(path)) {
+          return { ignored: true, path };
+        }
+      }
+      return { ignored: false, path };
+    }
+
+    private ignorePatternToRegex(pattern: string): string {
+      // Normalize the pattern
+      let normalized = pattern;
+
+      // Handle leading slashes (treated as anchored to root)
+      const anchored = normalized.startsWith('/');
+      if (anchored) {
+        normalized = normalized.slice(1);
+      }
+
+      // Handle trailing slashes (directory-only patterns in gitignore)
+      const dirOnly = normalized.endsWith('/');
+      if (dirOnly) {
+        normalized = normalized.slice(0, -1);
+      }
+
+      // Escape regex special characters except * and ?
+      const regex = normalized
+        .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/\*\*/g, '%%DOUBLESTAR%%')
+        .replace(/\*/g, '[^/]*')
+        .replace(/\?/g, '[^/]')
+        .replace(/%%DOUBLESTAR%%/g, '.*');
+
+      if (anchored) {
+        if (dirOnly) {
+          return '^' + regex + '/';
+        }
+        return '^' + regex + '$';
+      }
+      // For unanchored patterns:
+      // - Directory patterns (e.g., `node_modules/`) should match the dir and anything inside it
+      // - File patterns (e.g., `*.log`) should match exact filenames anywhere in the path
+      if (dirOnly) {
+        return '(?:^|/)' + regex + '/';
+      }
+      return '(?:^|/)' + regex + '$';
+    }
+  }
+
+  return {
+    default: () => new IgnoreMock(),
+    Ignore: IgnoreMock,
+  };
+});

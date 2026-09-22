@@ -102,18 +102,14 @@ describe('itemIsDir', () => {
     expect(itemIsDir(item)).toBe(true);
   });
 
-  // NOTE: The current implementation uses `|` (OR) instead of `&` (AND):
-  //   `!!(item.fileType | FileType.Directory)`
-  // This is a pre-existing bug — it always returns true for any non-undefined fileType
-  // because 1 | 2 = 3 (truthy). Tests document actual behavior until the bug is fixed.
-  it('returns true for FileType.File due to pre-existing bug (| should be &)', () => {
+  it('should return false for regular files', () => {
     const item = new FileItem(['test.txt', FileType.File]);
-    expect(itemIsDir(item)).toBe(true); // Bug: should be false
+    expect(itemIsDir(item)).toBe(false);
   });
 
-  it('returns true for FileType.File | FileType.SymbolicLink due to pre-existing bug', () => {
+  it('should return false for file + symbolic link', () => {
     const item = new FileItem(['test', FileType.File | FileType.SymbolicLink]);
-    expect(itemIsDir(item)).toBe(true); // Bug: should be false
+    expect(itemIsDir(item)).toBe(false);
   });
 });
 

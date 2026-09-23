@@ -8,15 +8,7 @@ import { Path, endsWithPathSeparator } from "./path";
 import { Rules } from "./filter";
 import { FileItem, fileRecordCompare } from "./fileitem";
 import { action, Action } from "./action";
-
-export enum ConfigItem {
-    RemoveIgnoredFiles = "removeIgnoredFiles",
-    HideDotfiles = "hideDotfiles",
-    HideIgnoreFiles = "hideIgnoredFiles",
-    IgnoreFileTypes = "ignoreFileTypes",
-    LabelIgnoredFiles = "labelIgnoredFiles",
-    IgnoreFocusLoss = "ignoreFocusLoss",
-}
+import { ConfigItem } from "./ConfigItem";
 
 export function config<A>(item: ConfigItem): A | undefined {
     return vscode.workspace.getConfiguration("file-browser").get(item);

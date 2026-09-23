@@ -4,7 +4,7 @@ import { Uri } from 'vscode';
 import { Path } from '../src/path';
 import { Rules } from '../src/filter';
 import { FileItem, itemIsDir } from '../src/fileitem';
-import * as extensionModule from '../src/extension';
+import * as configItemModule from '../src/ConfigItem';
 
 describe('Rules', () => {
   const testRoot = '/home/user/project';
@@ -36,7 +36,7 @@ dist`;
 
   describe('forPath', () => {
     it('should return empty rules when IgnoreFileTypes config is undefined', async () => {
-      const configSpy = vi.spyOn(extensionModule, 'config').mockReturnValue(undefined);
+      const configSpy = vi.spyOn(configItemModule, 'config').mockReturnValue(undefined);
 
       const path = Path.fromFilePath(testRoot);
       const rules = await Rules.forPath(path);
@@ -46,7 +46,7 @@ dist`;
     });
 
     it('should return empty rules when no ignore file is found', async () => {
-      vi.spyOn(extensionModule, 'config').mockReturnValue(['.gitignore']);
+      vi.spyOn(configItemModule, 'config').mockReturnValue(['.gitignore']);
 
       // Make sure lookUpwards returns Err (file not found)
       // The mock for vscode.workspace.fs.stat already rejects with FileSystemError
@@ -57,7 +57,7 @@ dist`;
     });
 
     it('should read rules when ignore file exists', async () => {
-      vi.spyOn(extensionModule, 'config').mockReturnValue(['.gitignore']);
+      vi.spyOn(configItemModule, 'config').mockReturnValue(['.gitignore']);
       const readFileSpy = vi.spyOn(vscode.workspace.fs, 'readFile').mockResolvedValue(
         Buffer.from(ignoreFileContent)
       );
@@ -231,7 +231,7 @@ node_modules/
     });
 
     it('should set description when LabelIgnoredFiles is enabled', async () => {
-      vi.spyOn(extensionModule, 'config')
+      vi.spyOn(configItemModule, 'config')
         .mockImplementation((key) => {
           if (key === 'labelIgnoredFiles') {
             return true;
@@ -255,7 +255,7 @@ node_modules/
     });
 
     it('should not set description when LabelIgnoredFiles is disabled', async () => {
-      vi.spyOn(extensionModule, 'config')
+      vi.spyOn(configItemModule, 'config')
         .mockImplementation((key) => {
           if (key === 'labelIgnoredFiles') {
             return false;

@@ -5,7 +5,7 @@ import ignore from "ignore";
 import { Ignore } from "ignore";
 import { FileItem, itemIsDir } from "./fileitem";
 import * as OSPath from "path";
-import { config } from "./extension";
+import { config } from "./ConfigItem";
 import { ConfigItem } from "./ConfigItem";
 
 export class Rules {

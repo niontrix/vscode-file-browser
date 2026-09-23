@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as vscode from 'vscode';
 import { FileItem, itemIsDir, fileRecordCompare } from '../src/fileitem';
-import * as extensionModule from '../src/extension';
+import * as configItemModule from '../src/ConfigItem';
 
 const FileType = vscode.FileType;
 
@@ -48,7 +48,7 @@ describe('FileItem', () => {
     it('should set alwaysShow based on HideDotfiles config (true hides dotfiles)', () => {
       // The config() function calls getConfiguration("file-browser").get(item)
       // Mock the config function to return controlled values
-      const configSpy = vi.spyOn(extensionModule, 'config')
+      const configSpy = vi.spyOn(configItemModule, 'config')
         .mockImplementation((key) => {
           if (key === 'hideDotfiles') return true;
           return undefined;
@@ -61,7 +61,7 @@ describe('FileItem', () => {
     });
 
     it('should set alwaysShow to true for all files when HideDotfiles is false', () => {
-      const configSpy = vi.spyOn(extensionModule, 'config')
+      const configSpy = vi.spyOn(configItemModule, 'config')
         .mockImplementation((key) => {
           if (key === 'hideDotfiles') return false;
           return undefined;
@@ -74,7 +74,7 @@ describe('FileItem', () => {
     });
 
     it('should set alwaysShow to true when HideDotfiles config is undefined', () => {
-      const configSpy = vi.spyOn(extensionModule, 'config')
+      const configSpy = vi.spyOn(configItemModule, 'config')
         .mockReturnValue(undefined);
       const dotfile = new FileItem(['.hidden', FileType.File]);
       const normalFile = new FileItem(['visible.txt', FileType.File]);

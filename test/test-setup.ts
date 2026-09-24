@@ -46,6 +46,12 @@ vi.mock('@bodil/opt', () => {
     },
     orDefault: (dflt: unknown) => (result === undefined || result === null) ? dflt : result,
     getOrElse: (fn: () => unknown) => (result === undefined || result === null) ? fn() : result,
+    map: (fn: (val: unknown) => unknown) => {
+      if (result !== undefined && result !== null) {
+        return createOption(fn(result));
+      }
+      return None;
+    },
   });
 
   const Some = (value: unknown) => createOption(value);

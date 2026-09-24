@@ -2,7 +2,7 @@
     "name": "file-browser-x",
     "publisher": "niontrix",
     "displayName": "File Browser X",
-    "description": "A keyboard oriented file opening dialog based on extending vscode-file-browser.",
+    "description": "A keyboard oriented file opening dialog extending bodil.file-browser.",
     "version": "0.1.0",
     "license": "LGPL-3.0+",
     "author": {

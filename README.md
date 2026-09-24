@@ -5,6 +5,9 @@ An integrated, keyboard driven file selector for VS Code, inspired by Emacs's
 
 ![screenshot](images/file-browser.gif)
 
+This is an updated and extended version of [bodil/vscode-file-browser](https://github.com/bodil/vscode-file-browser).
+It is built as a drop-in replacement for the original extension, so it can be used with [VSpaceCode](https://github.com/VSpaceCode/VSpaceCode) or its alternative [VSpacemax](https://github.com/niontrix/vspacemax).
+
 ## Features
 
 This is what this extension gives you:
@@ -22,8 +25,9 @@ This is what this extension gives you:
 
 ## Licence
 
-Copyright 2020 Bodil Stokke
 Copyright 2026 Tobias Heinlein
+
+This project is based on [vscode-file-browser](https://github.com/bodil/vscode-file-browser) by Bodil Stokke, Copyright 2020.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU
 Lesser General Public License as published by the Free Software Foundation, either version 3 of the

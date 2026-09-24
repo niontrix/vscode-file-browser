@@ -3,6 +3,7 @@ export enum Action {
     NewFolder,
     OpenFile,
     OpenFileBeside,
+    OpenFileBelow,
     RenameFile,
     DeleteFile,
     OpenFolder,

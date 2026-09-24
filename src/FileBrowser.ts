@@ -101,6 +101,7 @@ export class FileBrowser {
             this.items = [
                 action("$(file) Open this file", Action.OpenFile),
                 action("$(split-horizontal) Open this file to the side", Action.OpenFileBeside),
+                action("$(split-vertical) Open this file below", Action.OpenFileBelow),
                 action("$(edit) Rename this file", Action.RenameFile),
                 action("$(trash) Delete this file", Action.DeleteFile),
             ];
@@ -362,6 +363,15 @@ export class FileBrowser {
                 if (item.name && item.name.length > 0) {
                     path.push(item.name);
                 }
+                this.openFile(path.uri, ViewColumn.Beside);
+                break;
+            }
+            case Action.OpenFileBelow: {
+                const path = this.path.clone();
+                if (item.name && item.name.length > 0) {
+                    path.push(item.name);
+                }
+                await vscode.commands.executeCommand('workbench.action.splitEditorBelow');
                 this.openFile(path.uri, ViewColumn.Beside);
                 break;
             }

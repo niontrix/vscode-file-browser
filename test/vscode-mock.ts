@@ -182,6 +182,8 @@ export const FileType = {
 export const ViewColumn = {
   Active: -1,
   Beside: -2,
+  One: 0,
+  Two: 1,
 };
 
 export const WorkspaceFolder = class {};

@@ -1,28 +1,5 @@
 import { vi } from 'vitest';
 
-// Cache for URI objects - same path always returns same object
-const uriCache = new Map<string, {}>();
-
-const getOrCreateUri = (path: string): {} => {
-  if (!uriCache.has(path)) {
-    const uri = {
-      scheme: 'file',
-      authority: '',
-      path,
-      fsPath: path,
-      query: '',
-      fragment: '',
-      toString: (_encode?: boolean) => path,
-      with: (change: { scheme?: string; authority?: string; path?: string; query?: string; fragment?: string }) => {
-        const newPath = change.path ?? path;
-        return getOrCreateUri(newPath);
-      },
-    };
-    uriCache.set(path, uri);
-  }
-  return uriCache.get(path)!;
-};
-
 // Mock node:os module
 vi.mock('node:os', () => ({
   default: {

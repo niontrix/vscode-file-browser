@@ -23,6 +23,14 @@ const getOrCreateUri = (path: string): {} => {
   return uriCache.get(path)!;
 };
 
+// Mock node:os module
+vi.mock('node:os', () => ({
+  default: {
+    homedir: () => '/home/mock-user',
+  },
+  homedir: () => '/home/mock-user',
+}));
+
 // Mock @bodil/opt module
 vi.mock('@bodil/opt', () => {
   const createOption = (result: unknown) => ({
@@ -51,6 +59,13 @@ vi.mock('@bodil/opt', () => {
         return createOption(fn(result));
       }
       return None;
+    },
+    /** Chain a function that returns an Option when the value is None. */
+    chainNone: (fn: () => unknown) => {
+      if (result === undefined || result === null) {
+        return fn();
+      }
+      return createOption(result);
     },
   });
 

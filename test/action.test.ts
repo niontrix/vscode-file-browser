@@ -8,15 +8,16 @@ describe('Action', () => {
       expect(Action.NewFolder).toBe(1);
       expect(Action.OpenFile).toBe(2);
       expect(Action.OpenFileBeside).toBe(3);
-      expect(Action.RenameFile).toBe(4);
-      expect(Action.DeleteFile).toBe(5);
-      expect(Action.OpenFolder).toBe(6);
-      expect(Action.OpenFolderInNewWindow).toBe(7);
+      expect(Action.OpenFileVertically).toBe(4);
+      expect(Action.RenameFile).toBe(5);
+      expect(Action.DeleteFile).toBe(6);
+      expect(Action.OpenFolder).toBe(7);
+      expect(Action.OpenFolderInNewWindow).toBe(8);
     });
 
     it('should allow reverse lookup by value', () => {
       expect(Action[0]).toBe('NewFile');
-      expect(Action[7]).toBe('OpenFolderInNewWindow');
+      expect(Action[8]).toBe('OpenFolderInNewWindow');
     });
   });
 
@@ -52,6 +53,7 @@ describe('Action', () => {
         Action.NewFolder,
         Action.OpenFile,
         Action.OpenFileBeside,
+        Action.OpenFileVertically,
         Action.RenameFile,
         Action.DeleteFile,
         Action.OpenFolder,

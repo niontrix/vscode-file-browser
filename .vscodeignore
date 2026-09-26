@@ -3,9 +3,13 @@
 out/test/**
 src/**
 .gitignore
+eslint.config.mjs
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/.eslintrc.json
 **/*.map
 **/*.ts
 images/file-browser.gif
+.tmp-profile/**
+.kilo/**
+.github/**
